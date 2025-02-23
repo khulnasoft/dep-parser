@@ -8,10 +8,17 @@ type Parser struct {
 	Name string
 }
 
-func NewParser(name string) *Parser {
-	return &Parser{
-		Name: name,
+// NewParser creates a new Parser instance with the specified name.
+// It returns an error if the name is empty.
+func NewParser(name string) (*Parser, error) {
+	if name == "" {
+		return nil, fmt.Errorf("parser name cannot be empty")
 	}
+	return &Parser{
+		Name:           name,
+		SupportedFiles: []string{},
+		Version:        "1.0.0",
+	}, nil
 }
 
 func main() {
