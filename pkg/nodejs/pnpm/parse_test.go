@@ -12,14 +12,6 @@ import (
 	"github.com/khulnasoft/dep-parser/pkg/types"
 )
 
-// Helper function to open a file and return its handle
-func openFile(t *testing.T, path string) *os.File {
-	t.Helper()
-	f, err := os.Open(path)
-	require.NoError(t, err)
-	return f
-}
-
 func TestParse(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -67,8 +59,8 @@ func TestParse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := openFile(t, tt.file)
-			defer f.Close()
+			f, err := os.Open(tt.file)
+			require.NoError(t, err)
 
 			got, deps, err := NewParser().Parse(f)
 			require.NoError(t, err)
@@ -86,7 +78,6 @@ func TestParse(t *testing.T) {
 	}
 }
 
-// Helper function to sort dependencies
 func sortDeps(deps []types.Dependency) {
 	sort.Slice(deps, func(i, j int) bool {
 		return strings.Compare(deps[i].ID, deps[j].ID) < 0
@@ -97,7 +88,6 @@ func sortDeps(deps []types.Dependency) {
 	}
 }
 
-// Helper function to sort libraries
 func sortLibs(libs []types.Library) {
 	sort.Slice(libs, func(i, j int) bool {
 		ret := strings.Compare(libs[i].Name, libs[j].Name)

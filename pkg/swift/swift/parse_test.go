@@ -7,20 +7,18 @@ import (
 	"testing"
 )
 
-// Helper function to open a file and return its handle
-func openFile(t *testing.T, path string) *os.File {
-	t.Helper()
-	f, err := os.Open(path)
-	assert.NoError(t, err)
-	return f
-}
-
 func TestParser_Parse(t *testing.T) {
 	tests := []struct {
 		name      string
 		inputFile string
 		want      []types.Library
 	}{
+		// docker run -it --rm swift@sha256:3c62ac97506ecf19ca15e4db57d7930e6a71559b23b19aa57e13d380133a54db
+		// mkdir app && cd app
+		// swift package init
+		// ## add new deps: ##
+		// sed -i 's/"1.0.0")/"1.0.0")\n.package(url: "https:\/\/github.com\/ReactiveCocoa\/ReactiveSwift", from: "7.0.0"),\n.package(url: "https:\/\/github.com\/Quick\/Nimble", .exact("9.2.1"))/' Package.swift
+		// swift package update
 		{
 			name:      "happy path v1",
 			inputFile: "testdata/happy-v1-Package.resolved",
@@ -39,6 +37,12 @@ func TestParser_Parse(t *testing.T) {
 				},
 			},
 		},
+		// docker run -it --rm swift@sha256:45e5e44ed4873063795f150182437f4dbe7d5527ba5655979d7d11e0829179a7
+		// mkdir app && cd app
+		// swift package init
+		// ## add new deps: ##
+		// sed -i 's/],/],\ndependencies: [\n.package(url: "https:\/\/github.com\/ReactiveCocoa\/ReactiveSwift", from: "7.0.0"),\n.package(url: "https:\/\/github.com\/Quick\/Quick.git", from: "7.0.0"),\n.package(url: "https:\/\/github.com\/Quick\/Nimble.git", .exact("9.2.1")),\n],/' Package.swift
+		// swift package update
 		{
 			name:      "happy path v2",
 			inputFile: "testdata/happy-v2-Package.resolved",
@@ -85,8 +89,8 @@ func TestParser_Parse(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			parser := NewParser()
-			f := openFile(t, tt.inputFile)
-			defer f.Close()
+			f, err := os.Open(tt.inputFile)
+			assert.NoError(t, err)
 
 			libs, _, err := parser.Parse(f)
 			assert.NoError(t, err)
