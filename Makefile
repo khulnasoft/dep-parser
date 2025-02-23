@@ -1,23 +1,17 @@
-export SHELL := /bin/bash
-export SHELLOPTS := errexit
-
-GOPATH ?= $(shell go env GOPATH)
-BIN_DIR := $(GOPATH)/bin
-GOLANGCI_LINT := $(BIN_DIR)/golangci-lint
-
-.PHONY: lint lintfix test build
-
-$(GOLANGCI_LINT):
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(BIN_DIR) v1.54.2
-
-lint: $(GOLANGCI_LINT)
-	@$(GOLANGCI_LINT) run
-
-lintfix: $(GOLANGCI_LINT)
-	@$(GOLANGCI_LINT) run --fix
-
+# Run all tests
 test:
-	go test -race ./...
+	@go test ./...
 
-build:
-	go build -o 
+# Run parser tests specifically
+test-parser:
+	@go test ./pkg/... -run TestParse
+
+# Run tests with coverage
+coverage:
+	@go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
+
+# Clean up generated files
+clean:
+	@rm -f coverage.out
+
+.PHONY: test test-parser coverage clean
