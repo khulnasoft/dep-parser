@@ -13,6 +13,14 @@ import (
 	"github.com/khulnasoft/dep-parser/pkg/types"
 )
 
+// Helper function to open a file and return its handle
+func openFile(t *testing.T, path string) *os.File {
+	t.Helper()
+	f, err := os.Open(path)
+	require.NoError(t, err)
+	return f
+}
+
 func TestParse(t *testing.T) {
 	vectors := []struct {
 		file    string // Test input file
@@ -37,8 +45,8 @@ func TestParse(t *testing.T) {
 
 	for _, tt := range vectors {
 		t.Run(path.Base(tt.file), func(t *testing.T) {
-			f, err := os.Open(tt.file)
-			require.NoError(t, err)
+			f := openFile(t, tt.file)
+			defer f.Close()
 
 			got, _, err := NewParser().Parse(f)
 			if tt.wantErr != "" {

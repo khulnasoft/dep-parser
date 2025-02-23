@@ -8,6 +8,14 @@ import (
 	"testing"
 )
 
+// Helper function to open a file and return its handle
+func openFile(t *testing.T, path string) *os.File {
+	t.Helper()
+	f, err := os.Open(path)
+	require.NoError(t, err)
+	return f
+}
+
 var (
 	// docker run --name composer --rm -it composer@sha256:082ed124b68e7e880721772a6bf22ad809e3bc87db8bbee9f0ec7127bb21ccad bash
 	// apk add jq
@@ -157,8 +165,8 @@ func TestParse(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f, err := os.Open(tt.file)
-			require.NoError(t, err)
+			f := openFile(t, tt.file)
+			defer f.Close()
 			defer f.Close()
 
 			gotLibs, gotDeps, err := NewParser().Parse(f)
