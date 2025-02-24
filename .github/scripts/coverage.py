@@ -26,8 +26,11 @@ report = sys.argv[2]
 
 
 args = shlex.split(f"go tool cover -func {report}")
-p = subprocess.run(args, capture_output=True, text=True)
-
+try:
+    p = subprocess.run(args, capture_output=True, text=True, check=True)
+except subprocess.CalledProcessError as e:
+    print(f"{bcolors.FAIL}Error running coverage tool: {e}{bcolors.ENDC}")
+    sys.exit(1)
 try:
     last_line = p.stdout.splitlines()[-1]
     coverage_str = last_line.split()[-1].replace("%", "")
