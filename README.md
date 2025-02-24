@@ -14,7 +14,3 @@
 ✅ Highly extensible & developer-friendly  
 
 ---
-
-## 📌 Installation  
-```sh
-pip install dep-parser
