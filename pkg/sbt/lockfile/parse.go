@@ -7,6 +7,7 @@ import (
 
 	"github.com/liamg/jfather"
 	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 	"golang.org/x/xerrors"
 
 	dio "github.com/khulnasoft/dep-parser/pkg/io"
@@ -32,11 +33,11 @@ type sbtLockfileDependency struct {
 
 type Parser struct{}
 
-func NewParser() *Parser {
+func NewParser() types.Parser {
 	return &Parser{}
 }
 
-func (Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency, error) {
+func (p *Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency, error) {
 	var lockfile sbtLockfile
 	input, err := io.ReadAll(r)
 
@@ -47,13 +48,14 @@ func (Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency, er
 		return nil, nil, xerrors.Errorf("JSON decoding failed: %w", err)
 	}
 
-	var libraries types.Librarys
+	libs := map[string]types.Library{}
+	foundDeps := map[string][]string{}
 
 	for _, dep := range lockfile.Dependencies {
 		if slices.ContainsFunc(dep.Configurations, isIncludedConfig) {
 			name := dep.Organization + ":" + dep.Name
-			libraries = append(libraries, types.Library{
-				ID:      dependency.ID(types.Sbt, name, dep.Version),
+			lib := types.Library{
+				ID:      utils.PackageID(name, dep.Version),
 				Name:    name,
 				Version: dep.Version,
 				Locations: []types.Location{
@@ -62,12 +64,16 @@ func (Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency, er
 						EndLine:   dep.EndLine,
 					},
 				},
-			})
+			}
+			libs[lib.Name] = lib
 		}
 	}
 
-	sort.Sort(libraries)
-	return libraries, nil, nil
+	libSlice := maps.Values(libs)
+	sort.Sort(types.Libraries(libSlice))
+
+	// Dependencies are currently not being parsed from the file, return an empty slice
+	return libSlice, []types.Dependency{}, nil
 }
 
 // UnmarshalJSONWithMetadata needed to detect start and end lines of deps
