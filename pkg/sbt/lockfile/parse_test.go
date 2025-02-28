@@ -21,7 +21,7 @@ func TestParser_Parse(t *testing.T) {
 			inputFile: "testdata/v1_happy.sbt.lock",
 			want: []types.Library{
 				{
-					ID:      "org.apache.commons:commons-lang3:3.9",
+					ID:      "org.apache.commons:commons-lang3@3.9",
 					Name:    "org.apache.commons:commons-lang3",
 					Version: "3.9",
 					Locations: []types.Location{
@@ -32,7 +32,7 @@ func TestParser_Parse(t *testing.T) {
 					},
 				},
 				{
-					ID:      "org.scala-lang:scala-library:2.12.10",
+					ID:      "org.scala-lang:scala-library@2.12.10",
 					Name:    "org.scala-lang:scala-library",
 					Version: "2.12.10",
 					Locations: []types.Location{
@@ -43,7 +43,7 @@ func TestParser_Parse(t *testing.T) {
 					},
 				},
 				{
-					ID:      "org.typelevel:cats-core_2.12:2.9.0",
+					ID:      "org.typelevel:cats-core_2.12@2.9.0",
 					Name:    "org.typelevel:cats-core_2.12",
 					Version: "2.9.0",
 					Locations: []types.Location{
