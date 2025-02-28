@@ -3,17 +3,13 @@ package lockfile
 import (
 	"io"
 	"sort"
-	"strings"
 
 	"github.com/liamg/jfather"
-	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"golang.org/x/xerrors"
 
 	dio "github.com/khulnasoft/dep-parser/pkg/io"
-	"github.com/khulnasoft/dep-parser/pkg/log"
 	"github.com/khulnasoft/dep-parser/pkg/types"
-	"github.com/khulnasoft/dep-parser/pkg/utils"
 )
 
 // lockfile format defined at: https://stringbean.github.io/sbt-dependency-lock/file-formats/version-1.html
