@@ -5,11 +5,12 @@ import (
 	"sort"
 
 	"github.com/liamg/jfather"
-	"golang.org/x/exp/slices"
+	"golang.org/x/exp/maps"
 	"golang.org/x/xerrors"
 
 	dio "github.com/khulnasoft/dep-parser/pkg/io"
 	"github.com/khulnasoft/dep-parser/pkg/types"
+	"github.com/khulnasoft/dep-parser/pkg/utils"
 )
 
 // lockfile format defined at: https://stringbean.github.io/sbt-dependency-lock/file-formats/version-1.html
@@ -45,10 +46,9 @@ func (p *Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency,
 	}
 
 	libs := map[string]types.Library{}
-	foundDeps := map[string][]string{}
 
 	for _, dep := range lockfile.Dependencies {
-		if slices.ContainsFunc(dep.Configurations, isIncludedConfig) {
+		if containsConfig(dep.Configurations, "compile") || containsConfig(dep.Configurations, "runtime") {
 			name := dep.Organization + ":" + dep.Name
 			lib := types.Library{
 				ID:      utils.PackageID(name, dep.Version),
@@ -65,11 +65,11 @@ func (p *Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency,
 		}
 	}
 
+	// Convert map to slice
 	libSlice := maps.Values(libs)
 	sort.Sort(types.Libraries(libSlice))
 
-	// Dependencies are currently not being parsed from the file, return an empty slice
-	return libSlice, []types.Dependency{}, nil
+	return libSlice, nil, nil
 }
 
 // UnmarshalJSONWithMetadata needed to detect start and end lines of deps
@@ -77,12 +77,17 @@ func (t *sbtLockfileDependency) UnmarshalJSONWithMetadata(node jfather.Node) err
 	if err := node.Decode(&t); err != nil {
 		return err
 	}
-	// Decode func will overwrite line numbers if we save them first
 	t.StartLine = node.Range().Start.Line
 	t.EndLine = node.Range().End.Line
 	return nil
 }
 
-func isIncludedConfig(config string) bool {
-	return config == "compile" || config == "runtime"
+// Alternative to slices.ContainsFunc for Go < 1.21
+func containsConfig(configs []string, match string) bool {
+	for _, c := range configs {
+		if c == match {
+			return true
+		}
+	}
+	return false
 }
