@@ -36,7 +36,7 @@ func NewParser() *Parser {
 	return &Parser{}
 }
 
-func (Parser) Parse(r dio.ReadSeekerAt) ([]types.Package, []types.Dependency, error) {
+func (Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency, error) {
 	var lockfile sbtLockfile
 	input, err := io.ReadAll(r)
 
@@ -47,12 +47,12 @@ func (Parser) Parse(r dio.ReadSeekerAt) ([]types.Package, []types.Dependency, er
 		return nil, nil, xerrors.Errorf("JSON decoding failed: %w", err)
 	}
 
-	var libraries types.Packages
+	var libraries types.Librarys
 
 	for _, dep := range lockfile.Dependencies {
 		if slices.ContainsFunc(dep.Configurations, isIncludedConfig) {
 			name := dep.Organization + ":" + dep.Name
-			libraries = append(libraries, types.Package{
+			libraries = append(libraries, types.Library{
 				ID:      dependency.ID(types.Sbt, name, dep.Version),
 				Name:    name,
 				Version: dep.Version,
