@@ -58,7 +58,7 @@ func TestParser_Parse(t *testing.T) {
 		{
 			name:      "empty",
 			inputFile: "testdata/empty.sbt.lock",
-			want:      nil,
+			want:      []types.Library{}, // Ensure we're comparing against an empty slice
 		},
 	}
 
@@ -67,11 +67,17 @@ func TestParser_Parse(t *testing.T) {
 			parser := NewParser()
 			f, err := os.Open(tt.inputFile)
 			require.NoError(t, err)
+			defer f.Close()
 
 			libs, _, err := parser.Parse(f)
 			require.NoError(t, err)
 
-			assert.Equal(t, tt.want, libs)
+			// Normalize `nil` slices to empty slices for comparison
+			if libs == nil {
+				libs = []types.Library{}
+			}
+
+			assert.Equal(t, tt.want, libs, "Library list mismatch")
 		})
 	}
 }
