@@ -14,12 +14,12 @@ func TestParser_Parse(t *testing.T) {
 	tests := []struct {
 		name      string
 		inputFile string
-		want      []types.Package
+		want      []types.Library
 	}{
 		{
 			name:      "v1 happy path",
 			inputFile: "testdata/v1_happy.sbt.lock",
-			want: []types.Package{
+			want: []types.Library{
 				{
 					ID:      "org.apache.commons:commons-lang3:3.9",
 					Name:    "org.apache.commons:commons-lang3",
