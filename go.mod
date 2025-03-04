@@ -14,7 +14,7 @@ require (
 	github.com/microsoft/go-rustaudit v0.0.0-20220808201409-204dfee52032
 	github.com/samber/lo v1.49.1
 	github.com/stretchr/testify v1.10.0
-	go.uber.org/zap v1.26.0
+	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
 	golang.org/x/mod v0.23.0
 	golang.org/x/net v0.35.0
