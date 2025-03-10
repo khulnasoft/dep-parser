@@ -16,7 +16,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/zap v1.27.0
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
-	golang.org/x/mod v0.23.0
+	golang.org/x/mod v0.24.0
 	golang.org/x/net v0.35.0
 	golang.org/x/text v0.22.0
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028
