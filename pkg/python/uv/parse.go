@@ -20,7 +20,7 @@ type Lockfile struct {
 		Source      Source                 `toml:"source"`
 		Dependencies map[string]interface{} `toml:"dependencies"`
 		Dev         bool                   `toml:"dev"`
-	} `toml:"package"`
+	} `toml:"packages"`
 }
 
 type Source struct {
