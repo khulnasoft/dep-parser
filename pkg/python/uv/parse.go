@@ -118,8 +118,6 @@ func parseDependency(name string, versRange any, libVersions map[string][]string
 	}
 	return "", xerrors.Errorf("no matched version found for %q", name)
 }
-	return "", xerrors.Errorf("no matched version found for %q", name)
-}
 
 func normalizePkgName(name string) string {
 	return strings.ToLower(name)
