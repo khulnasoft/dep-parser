@@ -12,32 +12,32 @@ var (
 	// uv add httpx==0.28.1 --extra socks
 	// uv add orjson==3.10.12 --optional json
 	// apk add jq
-	// uv pip list --format json |jq -c 'sort_by(.name) | .[] | {"ID": (.name + "@" + .version), "Name": .name, "Version": .version}' | sed 's/$/,/' | sed 's/\"\([^"]*\)\":/\1:/g'
+	// uv pip list --format json |jq -c 'sort_by(.name) | .[] | {"ID": (.name + "@" + .version), "Name": .name, "Version": .version}' | sed 's/$/,/' | sed 's/"\([^"]*\)\":/\1:/g'
 
 	// add a root project
 	// fill in the relationships between the packages
 	uvNormal = []types.Library{
-		{ID: "normal@0.1.0", Name: "normal", Version: "0.1.0", Relationship: types.RelationshipRoot},
-		{ID: "httpx@0.28.1", Name: "httpx", Version: "0.28.1", Relationship: types.RelationshipDirect},
-		{ID: "orjson@3.10.12", Name: "orjson", Version: "3.10.12", Relationship: types.RelationshipDirect},
-		{ID: "pytest@8.3.4", Name: "pytest", Version: "8.3.4", Relationship: types.RelationshipDirect, Dev: true},
-		{ID: "requests@2.32.0", Name: "requests", Version: "2.32.0", Relationship: types.RelationshipDirect},
-		{ID: "anyio@4.7.0", Name: "anyio", Version: "4.7.0", Relationship: types.RelationshipIndirect},
-		{ID: "certifi@2024.12.14", Name: "certifi", Version: "2024.12.14", Relationship: types.RelationshipIndirect},
-		{ID: "charset-normalizer@3.4.0", Name: "charset-normalizer", Version: "3.4.0", Relationship: types.RelationshipIndirect},
-		{ID: "colorama@0.4.6", Name: "colorama", Version: "0.4.6", Relationship: types.RelationshipIndirect, Dev: true},
-		{ID: "exceptiongroup@1.2.2", Name: "exceptiongroup", Version: "1.2.2", Relationship: types.RelationshipIndirect},
-		{ID: "h11@0.14.0", Name: "h11", Version: "0.14.0", Relationship: types.RelationshipIndirect},
-		{ID: "httpcore@1.0.7", Name: "httpcore", Version: "1.0.7", Relationship: types.RelationshipIndirect},
-		{ID: "idna@3.10", Name: "idna", Version: "3.10", Relationship: types.RelationshipIndirect},
-		{ID: "iniconfig@2.0.0", Name: "iniconfig", Version: "2.0.0", Relationship: types.RelationshipIndirect, Dev: true},
-		{ID: "packaging@24.2", Name: "packaging", Version: "24.2", Relationship: types.RelationshipIndirect, Dev: true},
-		{ID: "pluggy@1.5.0", Name: "pluggy", Version: "1.5.0", Relationship: types.RelationshipIndirect, Dev: true},
-		{ID: "sniffio@1.3.1", Name: "sniffio", Version: "1.3.1", Relationship: types.RelationshipIndirect},
-		{ID: "socksio@1.0.0", Name: "socksio", Version: "1.0.0", Relationship: types.RelationshipIndirect},
-		{ID: "tomli@2.2.1", Name: "tomli", Version: "2.2.1", Relationship: types.RelationshipIndirect, Dev: true},
-		{ID: "typing-extensions@4.12.2", Name: "typing-extensions", Version: "4.12.2", Relationship: types.RelationshipIndirect},
-		{ID: "urllib3@2.2.3", Name: "urllib3", Version: "2.2.3", Relationship: types.RelationshipIndirect},
+		{ID: "normal@0.1.0", Name: "normal", Version: "0.1.0", Indirect: false},
+		{ID: "httpx@0.28.1", Name: "httpx", Version: "0.28.1", Indirect: false},
+		{ID: "orjson@3.10.12", Name: "orjson", Version: "3.10.12", Indirect: false},
+		{ID: "pytest@8.3.4", Name: "pytest", Version: "8.3.4", Indirect: false, Dev: true},
+		{ID: "requests@2.32.0", Name: "requests", Version: "2.32.0", Indirect: false},
+		{ID: "anyio@4.7.0", Name: "anyio", Version: "4.7.0", Indirect: true},
+		{ID: "certifi@2024.12.14", Name: "certifi", Version: "2024.12.14", Indirect: true},
+		{ID: "charset-normalizer@3.4.0", Name: "charset-normalizer", Version: "3.4.0", Indirect: true},
+		{ID: "colorama@0.4.6", Name: "colorama", Version: "0.4.6", Indirect: true, Dev: true},
+		{ID: "exceptiongroup@1.2.2", Name: "exceptiongroup", Version: "1.2.2", Indirect: true},
+		{ID: "h11@0.14.0", Name: "h11", Version: "0.14.0", Indirect: true},
+		{ID: "httpcore@1.0.7", Name: "httpcore", Version: "1.0.7", Indirect: true},
+		{ID: "idna@3.10", Name: "idna", Version: "3.10", Indirect: true},
+		{ID: "iniconfig@2.0.0", Name: "iniconfig", Version: "2.0.0", Indirect: true, Dev: true},
+		{ID: "packaging@24.2", Name: "packaging", Version: "24.2", Indirect: true, Dev: true},
+		{ID: "pluggy@1.5.0", Name: "pluggy", Version: "1.5.0", Indirect: true, Dev: true},
+		{ID: "sniffio@1.3.1", Name: "sniffio", Version: "1.3.1", Indirect: true},
+		{ID: "socksio@1.0.0", Name: "socksio", Version: "1.0.0", Indirect: true},
+		{ID: "tomli@2.2.1", Name: "tomli", Version: "2.2.1", Indirect: true, Dev: true},
+		{ID: "typing-extensions@4.12.2", Name: "typing-extensions", Version: "4.12.2", Indirect: true},
+		{ID: "urllib3@2.2.3", Name: "urllib3", Version: "2.2.3", Indirect: true},
 	}
 
 	// add a root project
