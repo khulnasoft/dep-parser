@@ -3,13 +3,13 @@ package pom
 import (
 	"encoding/xml"
 	"fmt"
-	"golang.org/x/xerrors"
 	"io"
 	"maps"
 	"reflect"
 	"strings"
 
 	"github.com/samber/lo"
+	"golang.org/x/xerrors"
 
 	"github.com/khulnasoft/dep-parser/pkg/types"
 	"github.com/khulnasoft/dep-parser/pkg/utils"
@@ -275,7 +275,7 @@ func (d pomDependency) ToArtifact(opts analysisOptions) artifact {
 	var locations types.Locations
 	if opts.lineNumber {
 		locations = types.Locations{
-			{
+			types.Location{
 				StartLine: d.StartLine,
 				EndLine:   d.EndLine,
 			},
@@ -332,7 +332,7 @@ func (deps *pomDependencies) UnmarshalXML(d *xml.Decoder, _ xml.StartElement) er
 				// Decode the <dependency> element
 				err = d.DecodeElement(&dep, &t)
 				if err != nil {
-					return xerrors.Errorf("Error decoding dependency: %w")
+					return xerrors.Errorf("Error decoding dependency: %v", err)
 				}
 
 				dep.EndLine, _ = d.InputPos() // <dependency> tag ends

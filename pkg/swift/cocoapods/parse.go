@@ -6,7 +6,7 @@ import (
 
 	"golang.org/x/exp/maps"
 	"golang.org/x/xerrors"
-	"gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v3"
 
 	dio "github.com/khulnasoft/dep-parser/pkg/io"
 	"github.com/khulnasoft/dep-parser/pkg/log"

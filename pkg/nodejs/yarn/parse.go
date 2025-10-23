@@ -3,16 +3,17 @@ package yarn
 import (
 	"bufio"
 	"bytes"
-	"github.com/khulnasoft/dep-parser/pkg/log"
 	"io"
 	"regexp"
 	"strings"
 
-	dio "github.com/khulnasoft/dep-parser/pkg/io"
-	"github.com/khulnasoft/dep-parser/pkg/types"
-	"github.com/khulnasoft/dep-parser/pkg/utils"
 	"github.com/samber/lo"
 	"golang.org/x/xerrors"
+
+	dio "github.com/khulnasoft/dep-parser/pkg/io"
+	"github.com/khulnasoft/dep-parser/pkg/log"
+	"github.com/khulnasoft/dep-parser/pkg/types"
+	"github.com/khulnasoft/dep-parser/pkg/utils"
 )
 
 var (
@@ -57,6 +58,14 @@ func (s *LineScanner) Scan() bool {
 
 func (s *LineScanner) LineNum(prevNum int) int {
 	return prevNum + s.lineCount - 1
+}
+
+func (s *LineScanner) Text() string {
+	return s.Scanner.Text()
+}
+
+func (s *LineScanner) Err() error {
+	return s.Scanner.Err()
 }
 
 func parsePattern(target string) (packagename, protocol, version string, err error) {

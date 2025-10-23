@@ -6,7 +6,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"golang.org/x/xerrors"
-	"gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v3"
 
 	dio "github.com/khulnasoft/dep-parser/pkg/io"
 	"github.com/khulnasoft/dep-parser/pkg/types"
@@ -66,14 +66,11 @@ func (p *Parser) Parse(r dio.ReadSeekerAt) (Packages, error) {
 
 func (p *Parser) toPackage(dep Dependency) types.Library {
 	name, ver := p.parseDependency(dep.Value)
-	if ver == "" {
-		// Remove logger warning as it's not needed
-	}
 	return types.Library{
 		Name:    name,
 		Version: ver,
 		Locations: types.Locations{
-			{
+			types.Location{
 				StartLine: dep.Line,
 				EndLine:   dep.Line,
 			},

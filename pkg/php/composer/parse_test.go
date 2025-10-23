@@ -1,11 +1,13 @@
 package composer
 
 import (
-	"github.com/khulnasoft/dep-parser/pkg/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/khulnasoft/dep-parser/pkg/types"
 )
 
 var (

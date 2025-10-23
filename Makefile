@@ -1,13 +1,13 @@
 TEMP_DIR := ./.tmp
 
 # Command templates #################################
-LINT_CMD := $(TEMP_DIR)/golangci-lint run --tests=false
+LINT_CMD := $(TEMP_DIR)/golangci-lint run --tests=false --disable=unused
 GOIMPORTS_CMD := $(TEMP_DIR)/gosimports -local github.com/khulnasoft
 
 # Tool versions #################################
-GOLANGCILINT_VERSION := v1.55.1
+GOLANGCILINT_VERSION := v2.4.0
 GOSIMPORTS_VERSION := v0.3.8
-GOLICENSES_VERSION := v5.0.1
+GOLICENSES_VERSION := v1.6.0
 
 # Formatting variables #################################
 BOLD := $(shell tput -T linux bold)
@@ -67,9 +67,10 @@ bootstrap: $(TEMP_DIR) bootstrap-go bootstrap-tools ## Download and install all 
 
 .PHONY: bootstrap-tools
 bootstrap-tools: $(TEMP_DIR)
-	GO111MODULE=on GOBIN=$(realpath $(TEMP_DIR)) go get -u golang.org/x/perf/cmd/benchstat
+	# Install benchstat in a temporary module to avoid affecting main go.mod
+	cd $(TEMP_DIR) && GO111MODULE=on GOBIN=$(realpath $(TEMP_DIR)) go mod init temp && go get -u golang.org/x/perf/cmd/benchstat
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(TEMP_DIR)/ $(GOLANGCILINT_VERSION)
-	curl -sSfL https://raw.githubusercontent.com/khulnasoft/go-licenses/master/golicenses.sh | sh -s -- -b $(TEMP_DIR)/ $(GOLICENSES_VERSION)
+	GOBIN="$(realpath $(TEMP_DIR))" go install github.com/google/go-licenses@$(GOLICENSES_VERSION)
 	GOBIN="$(realpath $(TEMP_DIR))" go install github.com/rinchsan/gosimports/cmd/gosimports@$(GOSIMPORTS_VERSION)
 
 .PHONY: bootstrap-go
@@ -112,7 +113,7 @@ lint-fix: format ## Auto-format all source code + run golangci lint fixers
 .PHONY: check-licenses
 check-licenses:  ## Ensure transitive dependencies are compliant with the current license policy
 	$(call title,Checking for license compliance)
-	$(TEMP_DIR)/golicenses check ./...
+	$(TEMP_DIR)/go-licenses check ./...
 
 check-go-mod-tidy:
 	@ .github/scripts/go-mod-tidy-check.sh && echo "go.mod and go.sum are tidy!"

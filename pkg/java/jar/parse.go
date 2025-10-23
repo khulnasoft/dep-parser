@@ -5,19 +5,22 @@ import (
 	"bufio"
 	"crypto/sha1"
 	"encoding/hex"
+	"errors"
 	"fmt"
-	dio "github.com/khulnasoft/dep-parser/pkg/io"
-	"github.com/khulnasoft/dep-parser/pkg/log"
-	"github.com/khulnasoft/dep-parser/pkg/types"
-	"github.com/samber/lo"
-	"go.uber.org/zap"
-	"golang.org/x/xerrors"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/samber/lo"
+	"go.uber.org/zap"
+	"golang.org/x/xerrors"
+
+	dio "github.com/khulnasoft/dep-parser/pkg/io"
+	"github.com/khulnasoft/dep-parser/pkg/log"
+	"github.com/khulnasoft/dep-parser/pkg/types"
 )
 
 var (
@@ -151,7 +154,7 @@ func (p *Parser) parseArtifact(filePath string, size int64, r dio.ReadSeekerAt) 
 	props, err := p.searchBySHA1(r, filePath)
 	if err == nil {
 		return append(libs, props.Library()), nil, nil
-	} else if !xerrors.Is(err, ArtifactNotFoundErr) {
+	} else if !errors.Is(err, ArtifactNotFoundErr) {
 		return nil, nil, xerrors.Errorf("failed to search by SHA1: %w", err)
 	}
 
@@ -169,7 +172,7 @@ func (p *Parser) parseArtifact(filePath string, size int64, r dio.ReadSeekerAt) 
 		log.Logger.Debugw("POM was determined in a heuristic way", zap.String("file", fileName),
 			zap.String("artifact", fileProps.String()))
 		libs = append(libs, fileProps.Library())
-	} else if !xerrors.Is(err, ArtifactNotFoundErr) {
+	} else if !errors.Is(err, ArtifactNotFoundErr) {
 		return nil, nil, xerrors.Errorf("failed to search by artifact id: %w", err)
 	}
 
@@ -187,8 +190,8 @@ func (p *Parser) parseInnerJar(zf *zip.File, rootPath string) ([]types.Library, 
 		return nil, nil, xerrors.Errorf("unable to create a temp file: %w", err)
 	}
 	defer func() {
-		f.Close()
-		os.Remove(f.Name())
+		_ = f.Close()
+		_ = os.Remove(f.Name())
 	}()
 
 	// Copy the file content to the temp file
@@ -253,7 +256,9 @@ func parsePomProperties(f *zip.File, filePath string) (Properties, error) {
 	if err != nil {
 		return Properties{}, xerrors.Errorf("unable to open pom.properties: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	p := Properties{
 		FilePath: filePath,
@@ -295,7 +300,9 @@ func parseManifest(f *zip.File) (manifest, error) {
 	if err != nil {
 		return manifest{}, xerrors.Errorf("unable to open MANIFEST.MF: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	var m manifest
 	scanner := bufio.NewScanner(file)

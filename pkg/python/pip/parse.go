@@ -2,14 +2,15 @@ package pip
 
 import (
 	"bufio"
-	dio "github.com/khulnasoft/dep-parser/pkg/io"
-	"github.com/khulnasoft/dep-parser/pkg/types"
+	"strings"
+
 	"golang.org/x/text/encoding"
 	u "golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 	"golang.org/x/xerrors"
-	"strings"
-	"unicode"
+
+	dio "github.com/khulnasoft/dep-parser/pkg/io"
+	"github.com/khulnasoft/dep-parser/pkg/types"
 )
 
 const (
@@ -60,7 +61,9 @@ func (p *Parser) Parse(r dio.ReadSeekerAt) ([]types.Library, []types.Dependency,
 
 func rStripByKey(line string, key string) string {
 	if pos := strings.Index(line, key); pos >= 0 {
-		line = strings.TrimRightFunc((line)[:pos], unicode.IsSpace)
+		line = strings.TrimRightFunc((line)[:pos], func(r rune) bool {
+			return r == ' ' || r == '\t' || r == '\n' || r == '\r'
+		})
 	}
 	return line
 }

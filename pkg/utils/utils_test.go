@@ -1,9 +1,11 @@
 package utils
 
 import (
-	"github.com/khulnasoft/dep-parser/pkg/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	"github.com/khulnasoft/dep-parser/pkg/types"
 )
 
 func TestUniqueLibraries(t *testing.T) {
