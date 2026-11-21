@@ -17,7 +17,6 @@ import (
 	"slices"
 	"strings"
 
-	mavenversion "github.com/masahiro331/go-mvn-version"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/xerrors"
 
@@ -26,6 +25,7 @@ import (
 	"github.com/khulnasoft/dep-parser/pkg/types"
 	xio "github.com/khulnasoft/dep-parser/pkg/x/io"
 	xos "github.com/khulnasoft/dep-parser/pkg/x/os"
+	mavenversion "github.com/khulnasoft/go-version-lib/pkg/mvn"
 )
 
 var (
@@ -828,8 +828,7 @@ func removePackageDuplicates(pkgs []types.Package) []types.Package {
 	var uniqPkgs []types.Package
 	for _, pkg := range pkgs {
 		uniqID := pkg.Name + "::" + pkg.FilePath
-		// err is always nil
-		// cf. https://github.com/masahiro331/go-mvn-version/blob/d3157d602a08806ad94464c443e0cef1370694a1/version.go#L20-L25
+		// NewVersion never returns an error.
 		pkgVer, _ := mavenversion.NewVersion(pkg.Version)
 		savedVers, ok := uniq[uniqID]
 		if !ok || !slices.ContainsFunc(savedVers, func(v mavenversion.Version) bool {
